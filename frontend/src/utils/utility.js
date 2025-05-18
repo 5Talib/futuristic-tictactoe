@@ -67,4 +67,4 @@ export function generateRoomCode() {
   return code;
 }
 
-export const backendURL = "http://localhost:4000";
+export const backendURL = "https://futuristic-tictactoe-backend1.onrender.com";

@@ -1,2 +1,2 @@
-const frontendURL = "http://localhost:5173";
+const frontendURL = "https://futuristic-tic-tac-toe.onrender.com";
 module.exports = { frontendURL };
