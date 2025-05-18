@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+@import "tailwindcss";
+@theme {
+    --font-roboto: "Orbitron", sans-serif; 
+  }
+body {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.loader {
+  border: 6px solid #0ff;
+  border-top: 6px solid #8000ff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px #0ff;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.neon-glow {
+  text-shadow:
+    0 0 5px #0ff,
+    0 0 10px #0ff,
+    0 0 10px #0ff,
+    0 0 0px #0ff;
+}
+
+.neon-button {
+  box-shadow:
+    0 0 5px #a855f7,
+    0 0 10px #a855f7,
+    0 0 20px #a855f7,
+    0 0 40px #a855f7;
+  transition: all 0.3s ease;
+}
+
+.neon-border {
+    box-shadow: 0 0 20px 1px #a855f7;
+    border: 1px solid #a855f7;
+    border-radius: 12px;
+  }
+.blue-border {
+    box-shadow: 0 0 20px 1px #0ff;
+    border: 1px solid #0ff;
+    border-radius: 12px;
+  }
+  
+  .neon-input {
+    box-shadow: 0 0 10px #0ff;
+  }
