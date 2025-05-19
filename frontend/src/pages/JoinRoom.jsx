@@ -4,8 +4,7 @@ import socket from "../utils/socket";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-export default function JoinRoom() {
-  const [name, setName] = useState("");
+export default function JoinRoom({ isRoomRef, name, setName }) {
   const [roomId, setRoomId] = useState("");
   const roomIdRef = useRef("");
   const navigate = useNavigate();
@@ -13,31 +12,32 @@ export default function JoinRoom() {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on("room-info", ({success}) => {
-        console.log(success);
-        if(success) {
-            toast.success("Successfully joined room");
-            navigate(`/game/${roomIdRef.current}`);
-        } else {
-            toast.error("Room size exceeded");
-        }
+    socket.on("room-info", ({ success }) => {
+      console.log(success);
+      if (success) {
+        isRoomRef.current = true;
+        toast.success("Successfully joined room");
+        navigate(`/game/${roomIdRef.current}`);
+      } else {
+        toast.error("Room size exceeded");
+      }
     });
 
     return () => {
-      socket.off("room-info"); 
+      socket.off("room-info");
     };
   }, [navigate]);
 
   const handleJoinRoom = () => {
     // console.log(name, roomId);
-    if(!name){
-        toast.error("Please provide your name");
-        return;
-    } 
-    if(!roomId){
-        toast.error("Please provide room code");
-        return;
-    } 
+    if (!name) {
+      toast.error("Please provide your name");
+      return;
+    }
+    if (!roomId) {
+      toast.error("Please provide room code");
+      return;
+    }
     roomIdRef.current = roomId;
     socket.emit("join-room", { name, roomId });
   };

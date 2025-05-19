@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: frontendURL, // allow your frontend origin
+    origin: frontendURL, 
     methods: ["GET", "POST"],
   },
 });
@@ -99,6 +99,7 @@ io.on("connection", (socket) => {
       socket.leave(roomId);
       console.log(`User left room ${roomId}`);
       io.to(socket.id).emit("room-left", { success: true });
+      socket.to(roomId).emit("user-left-room", {success: true});
     } catch (err) {
       console.error("Error in leave-room:", err);
     }

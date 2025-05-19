@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { checkWinner } from "../utils/utility";
 import GameLoading from "./GameLoading";
 
-export default function GameBoard() {
+export default function GameBoard({isRoomRef, name}) {
   const navigate = useNavigate();
   const Initailboard = [
     ["", "", ""],
@@ -23,11 +23,16 @@ export default function GameBoard() {
   const [playerALastMove, setPlayerALastMove] = useState();
   const [playerBLastMove, setPlayerBLastMove] = useState();
 
+  useEffect(()=>{
+    if(!isRoomRef.current) handleLeaveRoom();
+  },[]);
+
   useEffect(() => {
+    if (!socket || !socket.id || !roomId) return;
+
     socket.emit("check-user-in-room", roomId);
 
     socket.on("user-in-room-status", ({ isInRoom, roomStrength }) => {
-      // console.log(isInRoom, roomStrength, "asdf")
       if (isInRoom === undefined || isInRoom === false) navigate("/");
       if (isInRoom && roomStrength === 2) setLoading(false);
     });
@@ -46,10 +51,19 @@ export default function GameBoard() {
         toast.error("Something went wrong! Please try again");
       }
     });
+    socket.on("user-left-room", ({success}) => {
+        if(success){
+            toast.error("Opponent has left the room");
+            setTimeout(() => {
+                handleLeaveRoom();
+            }, 1000);
+        }
+    })
     return () => {
       socket.off("room-left");
+      socket.off("user-left-room");
     };
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     if (!socket || !socket.id || !roomId) return;
@@ -157,12 +171,12 @@ export default function GameBoard() {
             Room: <span className="text-white">{roomId}</span>
           </p>
           <p className="text-gray-500 mb-6">
-            Playing as: <span className="text-white">Player {role}</span>
+            Playing as: <span className="text-white">{name}</span>
           </p>
 
           {/* Next player */}
           <h2 className="text-2xl font-bold mb-4 text-white">
-            Current player: <span className="text-cyan-400">{turn}</span>
+            Current turn: <span className="text-cyan-400">{turn === role ? name : "Opponent"}</span>
           </h2>
 
           {/* Board */}
