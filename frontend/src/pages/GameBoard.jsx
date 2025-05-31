@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { checkWinner } from "../utils/utility";
 import GameLoading from "./GameLoading";
 
-export default function GameBoard({isRoomRef, name}) {
+export default function GameBoard({ isRoomRef, name }) {
   const navigate = useNavigate();
   const Initailboard = [
     ["", "", ""],
@@ -23,9 +23,9 @@ export default function GameBoard({isRoomRef, name}) {
   const [playerALastMove, setPlayerALastMove] = useState();
   const [playerBLastMove, setPlayerBLastMove] = useState();
 
-  useEffect(()=>{
-    if(!isRoomRef.current) handleLeaveRoom();
-  },[]);
+  useEffect(() => {
+    if (!isRoomRef.current) handleLeaveRoom();
+  }, []);
 
   useEffect(() => {
     if (!socket || !socket.id || !roomId) return;
@@ -51,14 +51,14 @@ export default function GameBoard({isRoomRef, name}) {
         toast.error("Something went wrong! Please try again");
       }
     });
-    socket.on("user-left-room", ({success}) => {
-        if(success){
-            toast.error("Opponent has left the room");
-            setTimeout(() => {
-                handleLeaveRoom();
-            }, 1000);
-        }
-    })
+    socket.on("user-left-room", ({ success }) => {
+      if (success) {
+        toast.error("Opponent has left the room");
+        setTimeout(() => {
+          handleLeaveRoom();
+        }, 1000);
+      }
+    });
     return () => {
       socket.off("room-left");
       socket.off("user-left-room");
@@ -136,6 +136,13 @@ export default function GameBoard({isRoomRef, name}) {
   }, [board, roomId]);
 
   const handleCellClick = (row, col) => {
+    const cell = board[row][col];
+    const isLastMove =
+      (playerALastMove?.x === row && playerALastMove?.y === col) ||
+      (playerBLastMove?.x === row && playerBLastMove?.y === col);
+
+    if (cell || isLastMove) return;
+    
     if (turn === role) {
       socket.emit("make-move", {
         roomId,
@@ -176,7 +183,10 @@ export default function GameBoard({isRoomRef, name}) {
 
           {/* Next player */}
           <h2 className="text-2xl font-bold mb-4 text-white">
-            Current turn: <span className="text-cyan-400">{turn === role ? name : "Opponent"}</span>
+            Current turn:{" "}
+            <span className="text-cyan-400">
+              {turn === role ? name : "Opponent"}
+            </span>
           </h2>
 
           {/* Board */}
